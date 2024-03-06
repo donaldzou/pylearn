@@ -3,10 +3,11 @@
 	const superbase = useSupabaseClient();
 	const email = ref("");
 	const password = ref("")
-	const store = usePyLearnStore();
 	const error = ref(false);
+	const loading = ref(false)
 
 	const signIn = async () => {
+		loading.value = true;
 		const { error: loginError, data: userData } = await superbase.auth.signInWithPassword({
 			email: email.value, password: password.value })
 		if (loginError) error.value = true;
@@ -41,11 +42,12 @@
 				<div class="col-12">
 					<button class="btn btn-dark w-100"
 							@click="signIn()"
-							:disabled="email.length === 0 || password.length === 0">Sign In</button>
+							:disabled="email.length === 0
+							|| password.length === 0 || loading">{{ !loading ? 'Sign In':'Signing In...'}}</button>
 				</div>
 				<div class="col-12">
 					<p class="text-center mb-1 text-muted">Don't have an account yet?</p>
-					<nuxt-link class="btn btn-outline-dark w-100">Sign Up</nuxt-link>
+					<nuxt-link class="btn btn-outline-dark w-100" :disabled="loading" to="signup">Sign Up</nuxt-link>
 				</div>
 			</div>
 		</div>
